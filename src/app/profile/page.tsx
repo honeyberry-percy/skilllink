@@ -1,18 +1,17 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Container, Typography, Box, Chip, CircularProgress, Button } from "@mui/material";
+import { Container, Typography, Box, Chip, CircularProgress, Button, Stack, Paper, Divider } from "@mui/material";
 import { useFirebase } from "../layout";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import Link from "next/link";
-import Paper from "@mui/material/Paper";
-import Divider from "@mui/material/Divider";
 
 export default function ProfilePage() {
   const { auth, db } = useFirebase();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [taskHistory, setTaskHistory] = useState<any[]>([]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -21,6 +20,11 @@ export default function ProfilePage() {
         const docRef = doc(db, "users", firebaseUser.uid);
         const docSnap = await getDoc(docRef);
         setProfile(docSnap.exists() ? docSnap.data() : null);
+        // Fetch completed tasks for students
+        getDocs(collection(db, "tasks")).then(snapshot => {
+          const allTasks = snapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }));
+          setTaskHistory(allTasks.filter(t => t.status === "completed" && t.assignedTo === firebaseUser.uid));
+        });
       }
       setLoading(false);
     });
@@ -74,7 +78,43 @@ export default function ProfilePage() {
           )) : <Typography variant="body2" color="text.secondary">No skills listed.</Typography>}
         </Box>
         <Typography variant="subtitle1" sx={{ color: "#FF5A5F", fontWeight: 700 }}>XP Points: <b>{profile.xpPoints}</b></Typography>
+        {profile.type === "student" && (
+          <Box sx={{ mt: 4 }}>
+            <Divider sx={{ mb: 2 }}>Task History</Divider>
+            {taskHistory.length === 0 ? (
+              <Typography color="text.secondary">No completed tasks yet.</Typography>
+            ) : (
+              <Stack spacing={2}>
+                {taskHistory.map(task => (
+                  <Paper key={task.id} elevation={1} sx={{ p: 2, borderRadius: 3, bgcolor: "#FAFAFA" }}>
+                    <Typography variant="subtitle1" fontWeight={700}>{task.title}</Typography>
+                    <Typography variant="body2" color="text.secondary">{task.description}</Typography>
+                    <CompanyInfo companyId={task.postedBy} />
+                    <Typography variant="body2" sx={{ color: '#FF5A5F', fontWeight: 700 }}>XP: 100</Typography>
+                  </Paper>
+                ))}
+              </Stack>
+            )}
+          </Box>
+        )}
       </Paper>
     </Container>
+  );
+}
+
+// Helper component to show company info
+function CompanyInfo({ companyId }: { companyId: string }) {
+  const { db } = useFirebase();
+  const [company, setCompany] = useState<any>(null);
+  useEffect(() => {
+    getDoc(doc(db, "users", companyId)).then(snap => {
+      setCompany(snap.exists() ? snap.data() : null);
+    });
+  }, [db, companyId]);
+  if (!company) return <Typography variant="body2">Loading company info...</Typography>;
+  return (
+    <Typography variant="body2" sx={{ mt: 1 }}>
+      Company: {company.name} ({company.email})
+    </Typography>
   );
 } 

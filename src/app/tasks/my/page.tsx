@@ -103,6 +103,10 @@ export default function MyTasksPage() {
     setTasks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
   };
 
+  const openCount = tasks.filter(t => t.status === "open").length;
+  const assignedCount = tasks.filter(t => t.status === "assigned").length;
+  const completedCount = tasks.filter(t => t.status === "completed").length;
+
   if (loading) {
     return <Container maxWidth="md" sx={{ mt: 8, textAlign: "center" }}><CircularProgress /></Container>;
   }
@@ -114,6 +118,12 @@ export default function MyTasksPage() {
     <Container maxWidth="md" sx={{ mt: 8 }}>
       <Typography variant="h4" fontWeight={700} gutterBottom>My Posted Tasks</Typography>
       <Divider sx={{ mb: 3 }} />
+      <Paper elevation={2} sx={{ p: 3, mb: 4, bgcolor: "#fff", textAlign: "center" }}>
+        <Typography variant="subtitle1">Total Tasks: <b>{tasks.length}</b></Typography>
+        <Typography variant="body2" sx={{ color: '#00A699', display: 'inline', mr: 2 }}>Open: {openCount}</Typography>
+        <Typography variant="body2" sx={{ color: '#FF5A5F', display: 'inline', mr: 2 }}>Assigned: {assignedCount}</Typography>
+        <Typography variant="body2" sx={{ color: '#484848', display: 'inline' }}>Completed: {completedCount}</Typography>
+      </Paper>
       {tasks.length === 0 ? (
         <Paper elevation={2} sx={{ p: 4, textAlign: "center", color: "#888" }}>
           <Typography>No tasks posted yet.</Typography>
@@ -127,6 +137,12 @@ export default function MyTasksPage() {
               <Typography variant="caption" sx={{ color: task.status === 'open' ? '#00A699' : task.status === 'assigned' ? '#FF5A5F' : '#484848', fontWeight: 700 }}>
                 Status: {task.status}
               </Typography>
+              {task.status !== "open" && task.assignedTo && (
+                <AssignedStudentInfo studentId={task.assignedTo} />
+              )}
+              {task.status === "open" && (
+                <Typography variant="body2" sx={{ mt: 1, color: '#888' }}>Not assigned yet.</Typography>
+              )}
               <Button variant="outlined" size="small" sx={{ ml: 2 }} onClick={() => handleViewApplicants(task)}>
                 View Applicants
               </Button>
@@ -178,5 +194,25 @@ export default function MyTasksPage() {
         message={snackbar}
       />
     </Container>
+  );
+}
+
+// Helper component to show assigned student info
+function AssignedStudentInfo({ studentId }: { studentId: string }) {
+  const { db } = useFirebase();
+  const [student, setStudent] = useState<any>(null);
+  useEffect(() => {
+    getDoc(doc(db, "users", studentId)).then(snap => {
+      setStudent(snap.exists() ? snap.data() : null);
+    });
+  }, [db, studentId]);
+  if (!student) return <Typography variant="body2" sx={{ mt: 1 }}>Loading student info...</Typography>;
+  return (
+    <Box sx={{ mt: 1, mb: 1, p: 1, bgcolor: '#FAFAFA', borderRadius: 2 }}>
+      <Typography variant="body2" fontWeight={700}>Assigned Student:</Typography>
+      <Typography variant="body2">Name: {student.name}</Typography>
+      <Typography variant="body2">Email: {student.email}</Typography>
+      <Typography variant="body2" sx={{ color: '#FF5A5F', fontWeight: 700 }}>XP: {student.xpPoints}</Typography>
+    </Box>
   );
 } 
