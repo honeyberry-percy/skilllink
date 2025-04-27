@@ -16,10 +16,10 @@ export default function Home() {
           Micro-internships for students. Real tasks, real experience, real rewards.
         </Typography>
         <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>
-          <Link href="/login" passHref legacyBehavior>
+          <Link href="/login">
             <Button variant="contained" color="primary" size="large">Login</Button>
           </Link>
-          <Link href="/register" passHref legacyBehavior>
+          <Link href="/register">
             <Button variant="outlined" color="primary" size="large">Register</Button>
           </Link>
         </Box>

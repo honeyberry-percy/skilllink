@@ -37,7 +37,7 @@ export default function ProfilePage() {
     return (
       <Container maxWidth="sm" sx={{ mt: 8, textAlign: "center" }}>
         <Typography variant="h5" gutterBottom>You are not logged in.</Typography>
-        <Link href="/login" passHref legacyBehavior>
+        <Link href="/login">
           <Button variant="contained" color="primary">Login</Button>
         </Link>
       </Container>

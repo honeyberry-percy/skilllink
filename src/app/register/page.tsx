@@ -46,7 +46,7 @@ export default function RegisterPage() {
         </RadioGroup>
         <Button type="submit" variant="contained" color="primary" size="large">Register</Button>
         <Typography textAlign="center" variant="body2">
-          Already have an account? <Link href="/login" passHref legacyBehavior><MuiLink>Login</MuiLink></Link>
+          Already have an account? <Link href="/login"><MuiLink>Login</MuiLink></Link>
         </Typography>
       </Box>
     </Container>
