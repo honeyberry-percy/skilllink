@@ -55,6 +55,11 @@ export default function ProfilePage() {
   return (
     <Container maxWidth="sm" sx={{ mt: 8 }}>
       <Box sx={{ textAlign: "center", mb: 4 }}>
+        {user && user.email === "admin@skilllink.com" && (
+          <Box sx={{ mb: 2 }}>
+            <Button variant="contained" color="secondary" href="/admin">Go to Admin Dashboard</Button>
+          </Box>
+        )}
         <Typography variant="h4" fontWeight={700} gutterBottom>Profile</Typography>
         <Typography variant="h6" color="primary.main">{profile.name}</Typography>
         <Typography variant="body1" color="text.secondary">{profile.email}</Typography>
