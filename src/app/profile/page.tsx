@@ -5,6 +5,9 @@ import { useFirebase } from "../layout";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import Link from "next/link";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import LinearProgress from "@mui/material/LinearProgress";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 
 export default function ProfilePage() {
   const { auth, db } = useFirebase();
@@ -58,6 +61,8 @@ export default function ProfilePage() {
     );
   }
 
+  const completedCount = taskHistory.length;
+
   return (
     <Container maxWidth="sm" sx={{ mt: 8 }}>
       <Paper elevation={3} sx={{ p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: "#fff", textAlign: "center" }}>
@@ -77,7 +82,35 @@ export default function ProfilePage() {
             <Chip key={idx} label={skill} color="secondary" />
           )) : <Typography variant="body2" color="text.secondary">No skills listed.</Typography>}
         </Box>
-        <Typography variant="subtitle1" sx={{ color: "#FF5A5F", fontWeight: 700 }}>XP Points: <b>{profile.xpPoints}</b></Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4, mb: 2, flexWrap: 'wrap' }}>
+          <Box sx={{ textAlign: 'center' }}>
+            <EmojiEventsIcon color="primary" sx={{ fontSize: 32 }} />
+            <Typography variant="subtitle2">Total XP</Typography>
+            <Typography variant="h6">{profile.xpPoints}</Typography>
+            <LinearProgress variant="determinate" value={Math.min((profile.xpPoints % 1000) / 10, 100)} sx={{ height: 8, borderRadius: 5, bgcolor: '#eee', mt: 1, mb: 0.5, width: 120 }} color="primary" />
+            <Typography variant="caption">{profile.xpPoints % 1000}/1000 XP to next badge</Typography>
+          </Box>
+          <Box sx={{ textAlign: 'center' }}>
+            <AssignmentTurnedInIcon color="info" sx={{ fontSize: 32 }} />
+            <Typography variant="subtitle2">Tasks Completed</Typography>
+            <Typography variant="h6">{completedCount}</Typography>
+          </Box>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="subtitle2">Badges</Typography>
+            {completedCount > 0 && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+                <EmojiEventsIcon color="secondary" />
+                <Typography variant="body2">First Task</Typography>
+              </Box>
+            )}
+            {profile.xpPoints >= 100 && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+                <EmojiEventsIcon sx={{ color: '#FFD700' }} />
+                <Typography variant="body2">100 XP Club</Typography>
+              </Box>
+            )}
+          </Box>
+        </Box>
         {profile.type === "student" && (
           <Box sx={{ mt: 4 }}>
             <Divider sx={{ mb: 2 }}>Task History</Divider>
