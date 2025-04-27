@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Container, Typography, Box, Chip, CircularProgress, TextField, Button, Card, CardContent, Stack } from "@mui/material";
 import { useFirebase } from "../layout";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import Link from "next/link";
 
 export default function TaskMarketplace() {
   const { db } = useFirebase();
@@ -57,7 +58,9 @@ export default function TaskMarketplace() {
                   ))}
                 </Box>
                 <Typography variant="caption" color="primary">Status: {task.status}</Typography>
-                <Button variant="outlined" size="small" sx={{ ml: 2 }}>Details</Button>
+                <Button variant="outlined" size="small" sx={{ ml: 2 }} component={Link} href={`/tasks/${task.id}`}>
+                  Details
+                </Button>
               </CardContent>
             </Card>
           ))}
