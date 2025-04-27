@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Container, Typography, Box, Chip, CircularProgress, TextField, Button, Card, CardContent, Stack } from "@mui/material";
+import { Container, Typography, Box, Chip, CircularProgress, TextField, Button, Card, CardContent, Stack, Paper, Divider } from "@mui/material";
 import { useFirebase } from "../layout";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import Link from "next/link";
@@ -34,6 +34,7 @@ export default function TaskMarketplace() {
   return (
     <Container maxWidth="md" sx={{ mt: 8 }}>
       <Typography variant="h4" fontWeight={700} gutterBottom>Task Marketplace</Typography>
+      <Divider sx={{ mb: 3 }} />
       <TextField
         label="Filter by skill"
         value={filter}
@@ -44,25 +45,27 @@ export default function TaskMarketplace() {
       {loading ? (
         <Box sx={{ textAlign: "center", mt: 8 }}><CircularProgress /></Box>
       ) : filteredTasks.length === 0 ? (
-        <Typography>No tasks found.</Typography>
+        <Paper elevation={2} sx={{ p: 4, textAlign: "center", color: "#888" }}>
+          <Typography>No tasks found. Try a different skill or check back later!</Typography>
+        </Paper>
       ) : (
         <Stack spacing={3}>
           {filteredTasks.map(task => (
-            <Card key={task.id} variant="outlined">
-              <CardContent>
-                <Typography variant="h6" fontWeight={600}>{task.title}</Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>{task.description}</Typography>
-                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 1 }}>
-                  {task.requiredSkills && task.requiredSkills.map((skill: string, idx: number) => (
-                    <Chip key={idx} label={skill} size="small" color="secondary" />
-                  ))}
-                </Box>
-                <Typography variant="caption" color="primary">Status: {task.status}</Typography>
-                <Button variant="outlined" size="small" sx={{ ml: 2 }} component={Link} href={`/tasks/${task.id}`}>
-                  Details
-                </Button>
-              </CardContent>
-            </Card>
+            <Paper key={task.id} elevation={2} sx={{ p: 3, borderRadius: 3, bgcolor: "#fff" }}>
+              <Typography variant="h6" fontWeight={600}>{task.title}</Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>{task.description}</Typography>
+              <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 1 }}>
+                {task.requiredSkills && task.requiredSkills.map((skill: string, idx: number) => (
+                  <Chip key={idx} label={skill} size="small" color="secondary" />
+                ))}
+              </Box>
+              <Typography variant="caption" sx={{ color: task.status === 'open' ? '#00A699' : task.status === 'assigned' ? '#FF5A5F' : '#484848', fontWeight: 700 }}>
+                Status: {task.status}
+              </Typography>
+              <Button variant="outlined" size="small" sx={{ ml: 2 }} component={Link} href={`/tasks/${task.id}`}>
+                Details
+              </Button>
+            </Paper>
           ))}
         </Stack>
       )}

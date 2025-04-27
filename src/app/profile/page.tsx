@@ -5,6 +5,8 @@ import { useFirebase } from "../layout";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import Link from "next/link";
+import Paper from "@mui/material/Paper";
+import Divider from "@mui/material/Divider";
 
 export default function ProfilePage() {
   const { auth, db } = useFirebase();
@@ -54,13 +56,14 @@ export default function ProfilePage() {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 8 }}>
-      <Box sx={{ textAlign: "center", mb: 4 }}>
+      <Paper elevation={3} sx={{ p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: "#fff", textAlign: "center" }}>
         {user && user.email === "admin@skilllink.com" && (
           <Box sx={{ mb: 2 }}>
             <Button variant="contained" color="secondary" href="/admin">Go to Admin Dashboard</Button>
           </Box>
         )}
         <Typography variant="h4" fontWeight={700} gutterBottom>Profile</Typography>
+        <Divider sx={{ mb: 2 }} />
         <Typography variant="h6" color="primary.main">{profile.name}</Typography>
         <Typography variant="body1" color="text.secondary">{profile.email}</Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>{profile.type === "student" ? "Student" : "Company"}</Typography>
@@ -70,8 +73,8 @@ export default function ProfilePage() {
             <Chip key={idx} label={skill} color="secondary" />
           )) : <Typography variant="body2" color="text.secondary">No skills listed.</Typography>}
         </Box>
-        <Typography variant="subtitle1">XP Points: <b>{profile.xpPoints}</b></Typography>
-      </Box>
+        <Typography variant="subtitle1" sx={{ color: "#FF5A5F", fontWeight: 700 }}>XP Points: <b>{profile.xpPoints}</b></Typography>
+      </Paper>
     </Container>
   );
 } 

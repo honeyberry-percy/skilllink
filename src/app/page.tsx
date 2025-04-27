@@ -1,11 +1,11 @@
 "use client";
-import { Button, Container, Typography, Box } from "@mui/material";
+import { Button, Container, Typography, Box, Paper } from "@mui/material";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <Container maxWidth="md" sx={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-      <Box sx={{ textAlign: "center", mt: 8 }}>
+    <Container maxWidth="sm" sx={{ minHeight: "80vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+      <Paper elevation={3} sx={{ p: { xs: 3, sm: 5 }, borderRadius: 4, textAlign: "center", width: "100%", bgcolor: "#fff" }}>
         <Typography variant="h2" fontWeight={700} gutterBottom color="primary.main">
           SkillLink
         </Typography>
@@ -23,7 +23,7 @@ export default function Home() {
             <Button variant="outlined" color="primary" size="large">Register</Button>
           </Link>
         </Box>
-      </Box>
+      </Paper>
     </Container>
   );
 }

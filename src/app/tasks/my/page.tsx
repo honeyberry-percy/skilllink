@@ -5,6 +5,8 @@ import { useFirebase } from "../../layout";
 import { collection, getDocs, query, where, doc, getDoc, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import Snackbar from "@mui/material/Snackbar";
+import Paper from "@mui/material/Paper";
+import Divider from "@mui/material/Divider";
 
 export default function MyTasksPage() {
   const { db, auth } = useFirebase();
@@ -111,58 +113,63 @@ export default function MyTasksPage() {
   return (
     <Container maxWidth="md" sx={{ mt: 8 }}>
       <Typography variant="h4" fontWeight={700} gutterBottom>My Posted Tasks</Typography>
+      <Divider sx={{ mb: 3 }} />
       {tasks.length === 0 ? (
-        <Typography>No tasks posted yet.</Typography>
+        <Paper elevation={2} sx={{ p: 4, textAlign: "center", color: "#888" }}>
+          <Typography>No tasks posted yet.</Typography>
+        </Paper>
       ) : (
         <Stack spacing={3}>
           {tasks.map(task => (
-            <Card key={task.id} variant="outlined">
-              <CardContent>
-                <Typography variant="h6" fontWeight={600}>{task.title}</Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>{task.description}</Typography>
-                <Typography variant="caption" color="primary">Status: {task.status}</Typography>
-                <Button variant="outlined" size="small" sx={{ ml: 2 }} onClick={() => handleViewApplicants(task)}>
-                  View Applicants
-                </Button>
-                <Button
-                  variant="contained"
-                  color="info"
-                  size="small"
-                  sx={{ ml: 2 }}
-                  onClick={() => handleMarkCompleted(task)}
-                  disabled={task.status !== "assigned"}
-                >
-                  Mark as Completed
-                </Button>
-              </CardContent>
-            </Card>
+            <Paper key={task.id} elevation={2} sx={{ p: 3, borderRadius: 3, bgcolor: "#fff" }}>
+              <Typography variant="h6" fontWeight={600}>{task.title}</Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>{task.description}</Typography>
+              <Typography variant="caption" sx={{ color: task.status === 'open' ? '#00A699' : task.status === 'assigned' ? '#FF5A5F' : '#484848', fontWeight: 700 }}>
+                Status: {task.status}
+              </Typography>
+              <Button variant="outlined" size="small" sx={{ ml: 2 }} onClick={() => handleViewApplicants(task)}>
+                View Applicants
+              </Button>
+              <Button
+                variant="contained"
+                color="info"
+                size="small"
+                sx={{ ml: 2 }}
+                onClick={() => handleMarkCompleted(task)}
+                disabled={task.status !== "assigned"}
+              >
+                Mark as Completed
+              </Button>
+            </Paper>
           ))}
         </Stack>
       )}
       <Dialog open={!!selectedTask} onClose={() => setSelectedTask(null)} maxWidth="sm" fullWidth>
-        <DialogTitle>Applicants for: {selectedTask?.title}</DialogTitle>
-        <DialogContent>
-          {applicantsLoading ? <CircularProgress /> : (
-            <List>
-              {applicants.length === 0 ? <ListItem><ListItemText primary="No applicants yet." /></ListItem> :
-                applicants.map(app => (
-                  <ListItem key={app.id} secondaryAction={app.status === "pending" && (
-                    <Button variant="contained" color="primary" onClick={() => handleAssign(app)}>
-                      Assign
-                    </Button>
-                  )}>
-                    <ListItemText
-                      primary={app.student.name}
-                      secondary={`Status: ${app.status}`}
-                    />
-                  </ListItem>
-                ))}
-            </List>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setSelectedTask(null)}>Close</Button>
-        </DialogActions>
+        <Paper elevation={3} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, bgcolor: "#fff" }}>
+          <DialogTitle>Applicants for: {selectedTask?.title}</DialogTitle>
+          <DialogContent>
+            {applicantsLoading ? <CircularProgress /> : (
+              <List>
+                {applicants.length === 0 ? <ListItem><ListItemText primary="No applicants yet." /></ListItem> :
+                  applicants.map(app => (
+                    <ListItem key={app.id} secondaryAction={app.status === "pending" && (
+                      <Button variant="contained" color="primary" onClick={() => handleAssign(app)}>
+                        Assign
+                      </Button>
+                    )}>
+                      <ListItemText
+                        primary={app.student.name}
+                        secondary={`Status: ${app.status}`}
+                      />
+                    </ListItem>
+                  ))}
+              </List>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setSelectedTask(null)}>Close</Button>
+          </DialogActions>
+        </Paper>
       </Dialog>
       <Snackbar
         open={!!snackbar}

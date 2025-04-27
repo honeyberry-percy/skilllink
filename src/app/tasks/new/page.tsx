@@ -4,6 +4,8 @@ import { Container, Typography, Box, TextField, Button, Alert } from "@mui/mater
 import { useFirebase } from "../../layout";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import Paper from "@mui/material/Paper";
+import Divider from "@mui/material/Divider";
 
 export default function NewTaskPage() {
   const { db, auth } = useFirebase();
@@ -56,16 +58,19 @@ export default function NewTaskPage() {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 8 }}>
-      <Typography variant="h4" fontWeight={700} gutterBottom>Post a New Task</Typography>
-      <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {error && <Alert severity="error">{error}</Alert>}
-        {success && <Alert severity="success">Task posted successfully!</Alert>}
-        <TextField label="Title" value={title} onChange={e => setTitle(e.target.value)} required fullWidth />
-        <TextField label="Description" value={description} onChange={e => setDescription(e.target.value)} required fullWidth multiline minRows={3} />
-        <TextField label="Required Skills (comma separated)" value={requiredSkills} onChange={e => setRequiredSkills(e.target.value)} required fullWidth />
-        <TextField label="Reward (optional)" value={reward} onChange={e => setReward(e.target.value)} fullWidth />
-        <Button type="submit" variant="contained" color="primary" size="large">Post Task</Button>
-      </Box>
+      <Paper elevation={3} sx={{ p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: "#fff", textAlign: "center" }}>
+        <Typography variant="h4" fontWeight={700} gutterBottom>Post a New Task</Typography>
+        <Divider sx={{ mb: 2 }} />
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {error && <Alert severity="error">{error}</Alert>}
+          {success && <Alert severity="success">Task posted successfully!</Alert>}
+          <TextField label="Title" value={title} onChange={e => setTitle(e.target.value)} required fullWidth />
+          <TextField label="Description" value={description} onChange={e => setDescription(e.target.value)} required fullWidth multiline minRows={3} />
+          <TextField label="Required Skills (comma separated)" value={requiredSkills} onChange={e => setRequiredSkills(e.target.value)} required fullWidth />
+          <TextField label="Reward (optional)" value={reward} onChange={e => setReward(e.target.value)} fullWidth />
+          <Button type="submit" variant="contained" color="primary" size="large" fullWidth>Post Task</Button>
+        </Box>
+      </Paper>
     </Container>
   );
 } 

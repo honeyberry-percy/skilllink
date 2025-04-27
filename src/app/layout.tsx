@@ -76,11 +76,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${nunito.className} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${nunito.className} antialiased`} style={{ background: '#FAFAFA' }}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <FirebaseProvider>
-            <AppBar position="static" color="default" elevation={0} sx={{ mb: 4 }}>
+            <AppBar position="static" color="default" elevation={0} sx={{ mb: 4, borderBottom: '1px solid #eee' }}>
               <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                   <Typography variant="h6" color="primary" fontWeight={700} component={Link} href="/" sx={{ textDecoration: "none" }}>
@@ -97,7 +97,9 @@ export default function RootLayout({
                 </Box>
               </Toolbar>
             </AppBar>
-            {children}
+            <Box sx={{ maxWidth: 900, mx: "auto", px: { xs: 2, sm: 4 }, py: 2, minHeight: '80vh' }}>
+              {children}
+            </Box>
           </FirebaseProvider>
         </ThemeProvider>
       </body>

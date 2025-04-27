@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useFirebase } from "../../layout";
 import { useParams } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
-import { Container, Typography, Box, Chip, CircularProgress, Button, Alert } from "@mui/material";
+import { Container, Typography, Box, Chip, CircularProgress, Button, Alert, Paper, Divider } from "@mui/material";
 import { onAuthStateChanged } from "firebase/auth";
 
 export default function TaskDetailsPage() {
@@ -66,21 +66,26 @@ export default function TaskDetailsPage() {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 8 }}>
-      <Typography variant="h4" fontWeight={700} gutterBottom>{task.title}</Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>{task.description}</Typography>
-      <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
-        {task.requiredSkills && task.requiredSkills.map((skill: string, idx: number) => (
-          <Chip key={idx} label={skill} color="secondary" />
-        ))}
-      </Box>
-      <Typography variant="subtitle1" color="primary">Status: {task.status}</Typography>
-      {applyError && <Alert severity="error" sx={{ mt: 2 }}>{applyError}</Alert>}
-      {applied && <Alert severity="success" sx={{ mt: 2 }}>Application submitted!</Alert>}
-      {user && task.status === "open" && (
-        <Button variant="contained" color="primary" sx={{ mt: 3 }} onClick={handleApply} disabled={applied}>
-          {applied ? "Applied" : "Apply for Task"}
-        </Button>
-      )}
+      <Paper elevation={3} sx={{ p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: "#fff", textAlign: "center" }}>
+        <Typography variant="h4" fontWeight={700} gutterBottom>{task.title}</Typography>
+        <Divider sx={{ mb: 2 }} />
+        <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>{task.description}</Typography>
+        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "center", mb: 2 }}>
+          {task.requiredSkills && task.requiredSkills.map((skill: string, idx: number) => (
+            <Chip key={idx} label={skill} color="secondary" />
+          ))}
+        </Box>
+        <Typography variant="subtitle1" sx={{ color: task.status === 'open' ? '#00A699' : task.status === 'assigned' ? '#FF5A5F' : '#484848', fontWeight: 700, mb: 2 }}>
+          Status: {task.status}
+        </Typography>
+        {applyError && <Alert severity="error" sx={{ mt: 2 }}>{applyError}</Alert>}
+        {applied && <Alert severity="success" sx={{ mt: 2 }}>Application submitted!</Alert>}
+        {user && task.status === "open" && (
+          <Button variant="contained" color="primary" sx={{ mt: 3 }} onClick={handleApply} disabled={applied}>
+            {applied ? "Applied" : "Apply for Task"}
+          </Button>
+        )}
+      </Paper>
     </Container>
   );
 } 
