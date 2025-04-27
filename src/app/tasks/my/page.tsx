@@ -4,6 +4,7 @@ import { Container, Typography, Box, Card, CardContent, Button, CircularProgress
 import { useFirebase } from "../../layout";
 import { collection, getDocs, query, where, doc, getDoc, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import Snackbar from "@mui/material/Snackbar";
 
 export default function MyTasksPage() {
   const { db, auth } = useFirebase();
@@ -15,6 +16,7 @@ export default function MyTasksPage() {
   const [selectedTask, setSelectedTask] = useState<any>(null);
   const [applicants, setApplicants] = useState<any[]>([]);
   const [applicantsLoading, setApplicantsLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState("");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -80,6 +82,25 @@ export default function MyTasksPage() {
     setTasks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
   };
 
+  const handleMarkCompleted = async (task: any) => {
+    // Update task status
+    await updateDoc(doc(db, "tasks", task.id), { status: "completed" });
+    // Increment student's XP
+    if (task.assignedTo) {
+      const studentRef = doc(db, "users", task.assignedTo);
+      const studentSnap = await getDoc(studentRef);
+      if (studentSnap.exists()) {
+        const currentXP = studentSnap.data().xpPoints || 0;
+        await updateDoc(studentRef, { xpPoints: currentXP + 100 });
+      }
+    }
+    setSnackbar("Task marked as completed and XP awarded!");
+    // Refresh tasks
+    const q = query(collection(db, "tasks"), where("postedBy", "==", user.uid));
+    const snapshot = await getDocs(q);
+    setTasks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  };
+
   if (loading) {
     return <Container maxWidth="md" sx={{ mt: 8, textAlign: "center" }}><CircularProgress /></Container>;
   }
@@ -102,6 +123,16 @@ export default function MyTasksPage() {
                 <Typography variant="caption" color="primary">Status: {task.status}</Typography>
                 <Button variant="outlined" size="small" sx={{ ml: 2 }} onClick={() => handleViewApplicants(task)}>
                   View Applicants
+                </Button>
+                <Button
+                  variant="contained"
+                  color="info"
+                  size="small"
+                  sx={{ ml: 2 }}
+                  onClick={() => handleMarkCompleted(task)}
+                  disabled={task.status !== "assigned"}
+                >
+                  Mark as Completed
                 </Button>
               </CardContent>
             </Card>
@@ -133,6 +164,12 @@ export default function MyTasksPage() {
           <Button onClick={() => setSelectedTask(null)}>Close</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={!!snackbar}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar("")}
+        message={snackbar}
+      />
     </Container>
   );
 } 
