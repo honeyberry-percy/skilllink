@@ -4,13 +4,15 @@ import { getFirestore } from "firebase/firestore";
 
 // TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyC8dE9ZiEbSTQwJUbqC7DDPesI3ozu3Z54",
+  authDomain: "skilllink-65cc7.firebaseapp.com",
+  projectId: "skilllink-65cc7",
+  storageBucket: "skilllink-65cc7.firebasestorage.app",
+  messagingSenderId: "907756571710",
+  appId: "1:907756571710:web:bcca8fbe3788915b1f156f",
 };
+
+
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);

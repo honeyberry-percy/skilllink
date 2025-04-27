@@ -2,9 +2,9 @@
 import { useState } from "react";
 import { Box, Button, Container, TextField, Typography, Alert, Radio, RadioGroup, FormControlLabel, FormLabel, Link as MuiLink } from "@mui/material";
 import Link from "next/link";
-// import { createUserWithEmailAndPassword } from "firebase/auth";
-// import { auth, db } from "../../firebaseConfig";
-// import { setDoc, doc } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../../firebaseConfig";
+import { setDoc, doc } from "firebase/firestore";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -16,19 +16,19 @@ export default function RegisterPage() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    // TODO: Implement Firebase Auth registration and Firestore user creation
-    // try {
-    //   const userCred = await createUserWithEmailAndPassword(auth, email, password);
-    //   await setDoc(doc(db, "users", userCred.user.uid), {
-    //     name,
-    //     email,
-    //     type: userType,
-    //     skills: [],
-    //     xpPoints: 0,
-    //   });
-    // } catch (err: any) {
-    //   setError(err.message);
-    // }
+    try {
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db, "users", userCred.user.uid), {
+        name,
+        email,
+        type: userType,
+        skills: [],
+        xpPoints: 0,
+      });
+      window.location.href = "/";
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
   return (

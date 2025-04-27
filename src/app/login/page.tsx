@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { Box, Button, Container, TextField, Typography, Alert, Link as MuiLink } from "@mui/material";
 import Link from "next/link";
-// import { signInWithEmailAndPassword } from "firebase/auth";
-// import { auth } from "../../firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,12 +13,12 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    // TODO: Implement Firebase Auth login
-    // try {
-    //   await signInWithEmailAndPassword(auth, email, password);
-    // } catch (err: any) {
-    //   setError(err.message);
-    // }
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = "/";
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
   return (
