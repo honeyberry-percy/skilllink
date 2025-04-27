@@ -30,7 +30,7 @@ export default function LoginPage() {
         <TextField label="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} required fullWidth />
         <Button type="submit" variant="contained" color="primary" size="large">Login</Button>
         <Typography textAlign="center" variant="body2">
-          Don&apos;t have an account? <Link href="/register"><MuiLink>Register</MuiLink></Link>
+          Don&apos;t have an account? <MuiLink component={Link} href="/register">Register</MuiLink>
         </Typography>
       </Box>
     </Container>
