@@ -88,6 +88,7 @@ export default function RootLayout({
                   </Typography>
                   <Button component={Link} href="/tasks" color="inherit">Tasks</Button>
                   <Button component={Link} href="/tasks/new" color="inherit">Post Task</Button>
+                  <Button component={Link} href="/tasks/my" color="inherit">My Tasks</Button>
                 </Box>
                 <Box sx={{ display: "flex", gap: 1 }}>
                   <Button component={Link} href="/profile" color="inherit">Profile</Button>
